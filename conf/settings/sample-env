@@ -1,0 +1,7 @@
+DATABASE_URL=sqlite:///dev.db
+
+DJANGO_ADMINS=Marco Anton <mj4nt0n@gmail.com>
+DJANGO_MANAGERS=Marco Anton <mj4nt0n@gmail.com>
+DJANGO_SECRET_KEY="xasfa|*oEa~5~B'}:m[7S+>Gx'74/7FhdcZb9&y?}&}^[$sVx2.0jg/,[reoZ{["
+DJANGO_SETTINGS_MODULE=conf.settings.development
+DJANGO_EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend

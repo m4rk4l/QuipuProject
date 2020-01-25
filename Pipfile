@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+ipython = "*"
+django-debug-toolbar = "*"
+django-extensions = "*"
+werkzeug = "*"
+
+[packages]
+django = {extras = ["argon2"],version = "*"}
+django-environ = "*"
+djangorestframework = "*"
+gunicorn = "*"
+whitenoise = "*"
+
+[requires]
+python_version = "3.8"
