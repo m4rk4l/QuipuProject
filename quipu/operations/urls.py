@@ -5,5 +5,6 @@ from . import views
 app_name = 'operations'
 
 urlpatterns = [
-    path('addition/', views.AdditionView.as_view(), name='addition')
+    path('addition/', views.OperationView.as_view(operation_type="addition")),
+    path('multiplication/', views.OperationView.as_view(operation_type="multiplication"))
 ]

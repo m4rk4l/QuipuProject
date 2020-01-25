@@ -5,11 +5,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import AdditionSerializer
+from .serializers import OperationSerializer
 
 
-class AdditionView(APIView):
+class OperationView(APIView):
     """"""
+    operation_type = None
 
     def get(self, *args, **kwargs):
         """"""
@@ -17,13 +18,18 @@ class AdditionView(APIView):
         if self.request.version and self.request.version != '1':
             raise APIException(_("Unsuported version"))
 
-        serializer = AdditionSerializer(data=self.request.data)
+        self.request.data.update({'a_type': self.operation_type})
+        serializer = OperationSerializer(data=self.request.data)
         if serializer.is_valid():
             result_data = {
                 "inputs": self.request.data,
-                "result": serializer.perform_addition()
+                "result": serializer.perform_operation()
                 }
             return Response(result_data, status=status.HTTP_200_OK)
         else:
-            # TODO: user a proper status code.
+            # TODO: use a better status code?
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SimpleCalculatorView(APIView):
+    """"""
