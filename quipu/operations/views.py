@@ -1,23 +1,52 @@
 from django.utils.translation import gettext as _
 from django.core.mail import mail_admins
 
+from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.schemas.openapi import AutoSchema
 
 from calculator.simple import SimpleCalculator
 
 from .serializers import OperationSerializer, ADDITION, MULTIPLICATION
 
 
-class AdditionView(APIView):
-    """Perform additions of multiple numbers.
+class CustomOperationSchema(AutoSchema):
+    """"""
 
-    Arguments:
-    `classification` (str): whether the operation is in real or imaginary numbers
-    `values`(list): the list of values to be added.
-    """
+    def get_operation(self, *args, **kwargs):
+        """Custom schema for results.
+
+        TODO:
+        * split serializers...
+        """
+        operations = super().get_operation(*args, **kwargs)
+
+        # FIXME:
+        # This is required because we have a single serializer that performs multiple operations
+        # From API perspective, this arguments are not required to be passed.
+        # Moreover, the dictionaries generated are dependent on the OperationSerializer.
+        operations.get('requestBody').get('content').get('application/json').get('schema').get('properties').pop('a_type', None) # noqa
+        operations.get('requestBody').get('content').get('application/json').get('schema').get('required').pop(0) # noqa
+
+        operations['responses'] = {
+            status.HTTP_200_OK: {
+                "input": _("Input given to the request"),
+                "result": _("Result calculated by api.")
+                },
+            status.HTTP_400_BAD_REQUEST: {
+                "many": _("details of errors")
+            }
+        }
+        return operations
+
+
+class AdditionView(GenericAPIView):
+    """Perform additions of multiple numbers."""
+    serializer_class = OperationSerializer
+    schema = CustomOperationSchema()
 
     def post(self, *args, **kwargs):
         """Perform additions of multiple numbers.
@@ -31,7 +60,7 @@ class AdditionView(APIView):
             raise APIException(_("Unsuported version"))
 
         self.request.data.update({'a_type': ADDITION})
-        serializer = OperationSerializer(data=self.request.data)
+        serializer = self.get_serializer(data=self.request.data)
         if serializer.is_valid(raise_exception=False):
             result_data = {
                 "inputs": self.request.data,
@@ -43,7 +72,10 @@ class AdditionView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MultiplicationView(APIView):
+class MultiplicationView(GenericAPIView):
+    """Performs multiplication of multiple numbers."""
+    serializer_class = OperationSerializer
+    schema = CustomOperationSchema()
 
     def post(self, *args, **kwargs):
         """"""
@@ -52,7 +84,7 @@ class MultiplicationView(APIView):
             raise APIException(_("Unsuported version"))
 
         self.request.data.update({'a_type': MULTIPLICATION})
-        serializer = OperationSerializer(data=self.request.data)
+        serializer = self.get_serializer(data=self.request.data)
         if serializer.is_valid(raise_exception=False):
             result_data = {
                 "inputs": self.request.data,
@@ -65,7 +97,10 @@ class MultiplicationView(APIView):
 
 
 class SimpleCalculatorView(APIView):
-    """"""
+    """Wrapper over [SimpleCalculator][calcref] to perform math operations.
+
+    [calcref]: https://github.com/badmetacoder/calculator
+    """
 
     def post(self, *args, **kwrgs):
         """Using SimpleCalculator to get results of operations."""

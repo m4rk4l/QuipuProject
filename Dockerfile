@@ -8,4 +8,4 @@ RUN pip install pipenv && pipenv install --system --deploy
 # running migrate because we only have a local db.
 # FIXME:
 # This only works through non http connections
-ENTRYPOINT ./manage.py migrate && gunicorn -c conf/settings/gunicorn.py conf.wsgi:application
+ENTRYPOINT ./manage.py migrate && ./manage.py collectstatic && gunicorn -c conf/settings/gunicorn.py conf.wsgi:application

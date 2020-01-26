@@ -12,7 +12,7 @@ urlpatterns = [
     path('multiplication/', views.MultiplicationView.as_view()),
     path('simple-calculator/', views.SimpleCalculatorView.as_view()),
 
-
+    # generation of schemas and Swager usage.
     path('openapi/', get_schema_view(
         title="Quipu Operations",
         description="API for simple mathematical operations.",
