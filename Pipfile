@@ -17,6 +17,8 @@ djangorestframework = "*"
 gunicorn = "*"
 whitenoise = "*"
 simplecalculator = "*"
+pyyaml = "*"
+coreapi = "*"
 
 [requires]
 python_version = "3.8"

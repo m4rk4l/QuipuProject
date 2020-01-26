@@ -8,20 +8,50 @@ from rest_framework import status
 
 from calculator.simple import SimpleCalculator
 
-from .serializers import OperationSerializer
+from .serializers import OperationSerializer, ADDITION, MULTIPLICATION
 
 
-class OperationView(APIView):
-    """"""
-    operation_type = None
+class AdditionView(APIView):
+    """Perform additions of multiple numbers.
 
-    def get(self, *args, **kwargs):
+    Arguments:
+    `classification` (str): whether the operation is in real or imaginary numbers
+    `values`(list): the list of values to be added.
+    """
+
+    def post(self, *args, **kwargs):
+        """Perform additions of multiple numbers.
+
+        Arguments:
+        `classification` (str): whether the operation is in real or imaginary numbers
+        `values`(list): the list of values to be added.
+        """
+        # TODO: abstract versioning to a mixin?
+        if self.request.version and self.request.version != '1':
+            raise APIException(_("Unsuported version"))
+
+        self.request.data.update({'a_type': ADDITION})
+        serializer = OperationSerializer(data=self.request.data)
+        if serializer.is_valid(raise_exception=False):
+            result_data = {
+                "inputs": self.request.data,
+                "result": serializer.perform_operation()
+                }
+            return Response(result_data, status=status.HTTP_200_OK)
+        else:
+            # TODO: use a better status code?
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MultiplicationView(APIView):
+
+    def post(self, *args, **kwargs):
         """"""
         # TODO: abstract versioning to a mixin?
         if self.request.version and self.request.version != '1':
             raise APIException(_("Unsuported version"))
 
-        self.request.data.update({'a_type': self.operation_type})
+        self.request.data.update({'a_type': MULTIPLICATION})
         serializer = OperationSerializer(data=self.request.data)
         if serializer.is_valid(raise_exception=False):
             result_data = {
@@ -37,7 +67,7 @@ class OperationView(APIView):
 class SimpleCalculatorView(APIView):
     """"""
 
-    def get(self, *args, **kwrgs):
+    def post(self, *args, **kwrgs):
         """Using SimpleCalculator to get results of operations."""
         calc_instance = SimpleCalculator()
         expression = self.request.data.get('expression', None)
