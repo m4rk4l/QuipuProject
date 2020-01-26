@@ -55,7 +55,9 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     ]
 THIRD_PARTY_APPS = []
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'quipu.operations',
+]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 # AUTHENTICATION
@@ -200,7 +202,8 @@ ADMIN_URL = "admin/"
 # https://www.django-rest-framework.org/
 INSTALLED_APPS += ['rest_framework', 'rest_framework.authtoken']
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',  # noqa E501
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
     'PAGE_SIZE': 10,
     # 'DEFAULT_AUTHENTICATION_CLASSES': []
 }

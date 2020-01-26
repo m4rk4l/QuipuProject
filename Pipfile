@@ -16,6 +16,7 @@ django-environ = "*"
 djangorestframework = "*"
 gunicorn = "*"
 whitenoise = "*"
+simplecalculator = "*"
 
 [requires]
 python_version = "3.8"
