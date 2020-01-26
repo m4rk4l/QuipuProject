@@ -28,7 +28,7 @@ Development
 If you would like to run the application locally, you can always run the Django server. This
 application uses `pipenv <https://pipenv.kennethreitz.org/en/latest/>`_ to manage virtual
 environments and dependencies.
-You can install pipenv by: ``pip install -user pipenv``. Next, you will need to install
+You can install pipenv by: ``pip install --user pipenv``. Next, you will need to install
 dependencies. You can use ``pipenv install --dev`` to install the required dependencies for
 development. This command will create a virtual environment using the python mentioned in the
 Pipfile (if you don't have that version of python installed, do so; or modify the file to include a

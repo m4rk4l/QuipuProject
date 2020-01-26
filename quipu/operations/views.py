@@ -64,7 +64,7 @@ class AdditionView(GenericAPIView):
         if serializer.is_valid(raise_exception=False):
             result_data = {
                 "inputs": self.request.data,
-                "result": serializer.perform_operation()
+                "result": f"{serializer.perform_operation():6.2f}"
                 }
             return Response(result_data, status=status.HTTP_200_OK)
         else:
@@ -88,7 +88,7 @@ class MultiplicationView(GenericAPIView):
         if serializer.is_valid(raise_exception=False):
             result_data = {
                 "inputs": self.request.data,
-                "result": serializer.perform_operation()
+                "result": f"{serializer.perform_operation()}"
                 }
             return Response(result_data, status=status.HTTP_200_OK)
         else:
